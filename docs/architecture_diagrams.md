@@ -730,7 +730,355 @@ classDiagram
     IterativeAnalysisService --> QueryProcessor
 ```
 
-## 8. Tecnologías y Stack
+## 8. Diagramas de Casos de Uso
+
+```mermaid
+graph TD
+    subgraph "Actores"
+        User[👤 Usuario Final]
+        Dev[👨‍💻 Desarrollador]
+        Admin[⚙️ Administrador]
+        API[🔗 Sistema Cliente]
+    end
+    
+    subgraph "Casos de Uso Principales"
+        UC1[Consultar datos en lenguaje natural]
+        UC2[Ejecutar análisis iterativo]
+        UC3[Obtener esquema de base de datos]
+        UC4[Ejecutar SQL directo]
+        UC5[Validar estado del sistema]
+    end
+    
+    subgraph "Casos de Uso de Administración"
+        UC6[Configurar conexiones de BD]
+        UC7[Gestionar contexto semántico]
+        UC8[Monitorear rendimiento]
+        UC9[Actualizar embeddings]
+        UC10[Configurar proveedores LLM]
+    end
+    
+    subgraph "Casos de Uso de Integración"
+        UC11[Integrar vía API REST]
+        UC12[Procesar consultas batch]
+        UC13[Sincronizar esquemas]
+        UC14[Exportar resultados]
+    end
+
+    %% Relaciones Usuario Final
+    User --> UC1
+    User --> UC2
+    User --> UC3
+    User --> UC5
+    
+    %% Relaciones Desarrollador
+    Dev --> UC1
+    Dev --> UC4
+    Dev --> UC11
+    Dev --> UC12
+    Dev --> UC14
+    
+    %% Relaciones Administrador
+    Admin --> UC6
+    Admin --> UC7
+    Admin --> UC8
+    Admin --> UC9
+    Admin --> UC10
+    Admin --> UC13
+    
+    %% Relaciones Sistema Cliente
+    API --> UC11
+    API --> UC12
+    API --> UC5
+    
+    %% Extensiones y dependencias
+    UC1 -.->|<<extend>>| UC2
+    UC2 -.->|<<include>>| UC1
+    UC11 -.->|<<include>>| UC1
+    UC12 -.->|<<include>>| UC4
+    UC8 -.->|<<include>>| UC5
+
+    classDef actor fill:#e3f2fd
+    classDef main_use_case fill:#e8f5e8
+    classDef admin_use_case fill:#fff3e0
+    classDef integration_use_case fill:#fce4ec
+    
+    class User,Dev,Admin,API actor
+    class UC1,UC2,UC3,UC4,UC5 main_use_case
+    class UC6,UC7,UC8,UC9,UC10 admin_use_case
+    class UC11,UC12,UC13,UC14 integration_use_case
+```
+
+### **Descripción de Casos de Uso**
+
+#### **🎯 Casos de Uso Principales**
+- **UC1 - Consultar datos en lenguaje natural**: Permite realizar consultas usando frases como "mostrar citas médicas del mes pasado"
+- **UC2 - Ejecutar análisis iterativo**: Refina automáticamente las consultas para obtener mejores resultados
+- **UC3 - Obtener esquema de base de datos**: Proporciona información sobre tablas, columnas y relaciones
+- **UC4 - Ejecutar SQL directo**: Permite ejecutar consultas SQL específicas con validación
+- **UC5 - Validar estado del sistema**: Verifica conectividad y salud de todos los componentes
+
+#### **⚙️ Casos de Uso de Administración**
+- **UC6 - Configurar conexiones de BD**: Gestiona conexiones a SQL Server y SQLite
+- **UC7 - Gestionar contexto semántico**: Administra sinónimos, descripciones y contexto de negocio
+- **UC8 - Monitorear rendimiento**: Supervisa métricas de consultas y embeddings
+- **UC9 - Actualizar embeddings**: Regenera vectores cuando cambia el esquema
+- **UC10 - Configurar proveedores LLM**: Gestiona claves API y configuración de OpenAI/DeepSeek
+
+## 9. Diagrama de Componentes
+
+```mermaid
+graph TB
+    subgraph "Frontend Layer"
+        WebUI[Web UI<br/>📱 Interface]
+        MobileApp[Mobile App<br/>📱 iOS/Android]
+        ClientSDK[Client SDK<br/>🔧 Python/JS]
+    end
+    
+    subgraph "API Gateway Layer"
+        Gateway[API Gateway<br/>🚪 nginx/traefik]
+        LoadBalancer[Load Balancer<br/>⚖️ HAProxy]
+        RateLimiter[Rate Limiter<br/>🚦 Redis]
+    end
+    
+    subgraph "Application Layer"
+        FastAPIApp[FastAPI Application<br/>🚀 main.py]
+        RouterModule[Router Module<br/>📍 api/endpoints.py]
+        MiddlewareStack[Middleware Stack<br/>🛡️ CORS, Auth, Logging]
+    end
+    
+    subgraph "Business Logic Layer"
+        QueryEngine[Query Engine<br/>🧠 QueryProcessor]
+        IntentAnalysis[Intent Analysis<br/>🎯 IntentDetector]
+        TableSelection[Table Selection<br/>📊 TableSelector]
+        SQLGeneration[SQL Generation<br/>⚡ SqlPlanner]
+        ResultFormatter[Result Formatter<br/>📄 AnswerFormatter]
+    end
+    
+    subgraph "RAG & AI Layer"
+        EmbeddingService[Embedding Service<br/>🔗 LLMService]
+        VectorSearch[Vector Search<br/>🔍 KnowledgeRetriever]
+        SemanticCache[Semantic Cache<br/>💾 Redis]
+        ContextEnricher[Context Enricher<br/>📚 SchemaProvider]
+    end
+    
+    subgraph "Data Access Layer"
+        DatabaseConnector[DB Connector<br/>🔌 DatabaseService]
+        SQLiteAdapter[SQLite Adapter<br/>💾 Local DB]
+        SQLServerAdapter[SQL Server Adapter<br/>🗄️ Enterprise DB]
+        ConnectionPool[Connection Pool<br/>🏊 pyodbc/asyncpg]
+    end
+    
+    subgraph "Storage Layer"
+        ChromaVector[ChromaDB<br/>🧮 Vector Store]
+        SQLiteDB[(SQLite DB<br/>📁 app.db)]
+        SQLServerDB[(SQL Server<br/>🏢 Production DB)]
+        FileSystem[(File System<br/>📂 JSON Config)]
+    end
+    
+    subgraph "External Services"
+        OpenAIAPI[OpenAI API<br/>🤖 GPT & Embeddings]
+        DeepSeekAPI[DeepSeek API<br/>🧠 Alternative LLM]
+        MonitoringService[Monitoring<br/>📊 Prometheus/Grafana]
+    end
+    
+    subgraph "Configuration Layer"
+        ConfigManager[Config Manager<br/>⚙️ ConfigLoader]
+        SecretManager[Secret Manager<br/>🔐 API Keys]
+        SchemaRegistry[Schema Registry<br/>📋 database_context.json]
+    end
+
+    %% Frontend to API Gateway
+    WebUI --> Gateway
+    MobileApp --> Gateway
+    ClientSDK --> Gateway
+    
+    %% API Gateway to Application
+    Gateway --> LoadBalancer
+    LoadBalancer --> RateLimiter
+    RateLimiter --> FastAPIApp
+    
+    %% Application Layer internal
+    FastAPIApp --> RouterModule
+    RouterModule --> MiddlewareStack
+    MiddlewareStack --> QueryEngine
+    
+    %% Business Logic Flow
+    QueryEngine --> IntentAnalysis
+    QueryEngine --> TableSelection
+    QueryEngine --> SQLGeneration
+    QueryEngine --> ResultFormatter
+    
+    %% RAG Integration
+    TableSelection --> VectorSearch
+    VectorSearch --> EmbeddingService
+    VectorSearch --> SemanticCache
+    QueryEngine --> ContextEnricher
+    
+    %% Data Access
+    QueryEngine --> DatabaseConnector
+    DatabaseConnector --> SQLiteAdapter
+    DatabaseConnector --> SQLServerAdapter
+    SQLiteAdapter --> ConnectionPool
+    SQLServerAdapter --> ConnectionPool
+    
+    %% Storage Connections
+    SQLiteAdapter --> SQLiteDB
+    SQLServerAdapter --> SQLServerDB
+    VectorSearch --> ChromaVector
+    ContextEnricher --> FileSystem
+    
+    %% External Services
+    EmbeddingService --> OpenAIAPI
+    EmbeddingService --> DeepSeekAPI
+    FastAPIApp --> MonitoringService
+    
+    %% Configuration
+    FastAPIApp --> ConfigManager
+    ConfigManager --> SecretManager
+    ContextEnricher --> SchemaRegistry
+    
+    %% Caching
+    SemanticCache -.-> VectorSearch
+    SemanticCache -.-> QueryEngine
+
+    classDef frontend fill:#e3f2fd
+    classDef gateway fill:#f3e5f5
+    classDef application fill:#e8f5e8
+    classDef business fill:#fff3e0
+    classDef rag fill:#fce4ec
+    classDef data fill:#f1f8e9
+    classDef storage fill:#e8eaf6
+    classDef external fill:#ffebee
+    classDef config fill:#e0f2f1
+    
+    class WebUI,MobileApp,ClientSDK frontend
+    class Gateway,LoadBalancer,RateLimiter gateway
+    class FastAPIApp,RouterModule,MiddlewareStack application
+    class QueryEngine,IntentAnalysis,TableSelection,SQLGeneration,ResultFormatter business
+    class EmbeddingService,VectorSearch,SemanticCache,ContextEnricher rag
+    class DatabaseConnector,SQLiteAdapter,SQLServerAdapter,ConnectionPool data
+    class ChromaVector,SQLiteDB,SQLServerDB,FileSystem storage
+    class OpenAIAPI,DeepSeekAPI,MonitoringService external
+    class ConfigManager,SecretManager,SchemaRegistry config
+```
+
+## 10. Diagrama de Despliegue
+
+```mermaid
+graph TB
+    subgraph "Production Environment"
+        subgraph "Load Balancer Tier"
+            LB[🌐 Load Balancer<br/>nginx + SSL]
+        end
+        
+        subgraph "Application Tier"
+            App1[🚀 MCPServer Instance 1<br/>Docker Container]
+            App2[🚀 MCPServer Instance 2<br/>Docker Container]
+            App3[🚀 MCPServer Instance 3<br/>Docker Container]
+        end
+        
+        subgraph "AI Services Tier"
+            ChromaCluster[🧮 ChromaDB Cluster<br/>Vector Database]
+            Redis[⚡ Redis Cache<br/>Semantic Cache]
+        end
+        
+        subgraph "Database Tier"
+            SQLServerPrimary[(🗄️ SQL Server Primary<br/>Production Database)]
+            SQLServerReplica[(🗄️ SQL Server Replica<br/>Read-Only Backup)]
+        end
+        
+        subgraph "Monitoring Tier"
+            Prometheus[📊 Prometheus<br/>Metrics Collection]
+            Grafana[📈 Grafana<br/>Dashboards]
+            AlertManager[🚨 AlertManager<br/>Notifications]
+        end
+    end
+    
+    subgraph "Development Environment"
+        DevApp[💻 MCPServer Dev<br/>Local FastAPI]
+        DevDB[(💾 SQLite Dev<br/>Local Database)]
+        DevChroma[🔍 ChromaDB Dev<br/>Local Vector Store]
+    end
+    
+    subgraph "External Services"
+        OpenAI[🤖 OpenAI API<br/>GPT + Embeddings]
+        DeepSeek[🧠 DeepSeek API<br/>Alternative LLM]
+        GitHub[📚 GitHub Repository<br/>Source Code]
+    end
+    
+    subgraph "Client Access"
+        WebBrowser[🌍 Web Browser<br/>User Interface]
+        MobileDevice[📱 Mobile App<br/>iOS/Android]
+        APIClient[🔌 API Client<br/>External Integration]
+    end
+
+    %% Client to Load Balancer
+    WebBrowser --> LB
+    MobileDevice --> LB
+    APIClient --> LB
+    
+    %% Load Balancer to Applications
+    LB --> App1
+    LB --> App2
+    LB --> App3
+    
+    %% Applications to Services
+    App1 --> ChromaCluster
+    App1 --> Redis
+    App1 --> SQLServerPrimary
+    App2 --> ChromaCluster
+    App2 --> Redis
+    App2 --> SQLServerPrimary
+    App3 --> ChromaCluster
+    App3 --> Redis
+    App3 --> SQLServerPrimary
+    
+    %% Database Replication
+    SQLServerPrimary -.-> SQLServerReplica
+    
+    %% External API Connections
+    App1 --> OpenAI
+    App1 --> DeepSeek
+    App2 --> OpenAI
+    App2 --> DeepSeek
+    App3 --> OpenAI
+    App3 --> DeepSeek
+    
+    %% Monitoring Connections
+    App1 --> Prometheus
+    App2 --> Prometheus
+    App3 --> Prometheus
+    ChromaCluster --> Prometheus
+    Redis --> Prometheus
+    SQLServerPrimary --> Prometheus
+    
+    Prometheus --> Grafana
+    Prometheus --> AlertManager
+    
+    %% Development Environment
+    DevApp --> DevDB
+    DevApp --> DevChroma
+    DevApp --> OpenAI
+    DevApp --> DeepSeek
+    
+    %% Source Control
+    DevApp -.-> GitHub
+    App1 -.-> GitHub
+
+    classDef production fill:#e8f5e8
+    classDef development fill:#e3f2fd
+    classDef external fill:#ffebee
+    classDef client fill:#fff3e0
+    classDef monitoring fill:#fce4ec
+    
+    class LB,App1,App2,App3,ChromaCluster,Redis,SQLServerPrimary,SQLServerReplica production
+    class DevApp,DevDB,DevChroma development
+    class OpenAI,DeepSeek,GitHub external
+    class WebBrowser,MobileDevice,APIClient client
+    class Prometheus,Grafana,AlertManager monitoring
+```
+
+## 11. Tecnologías y Stack
 
 ```mermaid
 mindmap
