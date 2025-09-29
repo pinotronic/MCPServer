@@ -1,0 +1,17 @@
+# Configuración MCP Server - SQL Server
+DB_ENGINE=sqlserver
+DB_SERVER=172.16.12.149
+DB_PORT=1433
+DB_DATABASE=Ventanilla
+DB_USER=sa
+DB_PASSWORD=V3ntan1lla
+DB_ENCRYPT=yes
+DB_TRUSTSERVERCERT=yes
+
+LLM_DEFAULT_PROVIDER=deepseek
+LLM_OPENAI_BASE=https://api.openai.com/v1
+LLM_OPENAI_MODEL=gpt-4o-mini
+LLM_DEEPSEEK_BASE=https://api.deepseek.com
+LLM_DEEPSEEK_MODEL=deepseek-reasoner
+MAX_ITERATIONS=5
+REQUEST_TIMEOUT_SECONDS=90

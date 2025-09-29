@@ -1,0 +1,26 @@
+
+[project]
+name = "mcp-server"
+version = "0.1.0"
+description = "MCP Server: NL to SQL with deterministic planner and RAG support"
+readme = "README.md"
+requires-python = ">=3.11"
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.mypy]
+python_version = "3.11"
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_return_any = true
+no_implicit_optional = true
+exclude = ["app/data/.*", "app/scripts/.*"]
+
+[tool.pytest.ini_options]
+testpaths = ["app/tests"]
